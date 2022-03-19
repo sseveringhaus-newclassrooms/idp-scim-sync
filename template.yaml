@@ -22,6 +22,7 @@ Metadata:
           - MemorySize
           - Timeout
           - LogGroupRetentionDays
+          - Tracing
       - Label:
           default: "State File - Configuration"
         Parameters:
@@ -86,6 +87,14 @@ Parameters:
       - info
       - debug
       - trace
+
+  Tracing:
+    Type: String
+    Description: The string that specifies the function's X-Ray tracing mode.
+    Default: Active
+    AllowedValues:
+      - Active
+      - PassThrough
 
   LogFormat:
     Type: String
@@ -215,6 +224,52 @@ Parameters:
       - 1827
       - 3653
 
+Mappings:
+  LambdaInsightsExtension: #https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Lambda-Insights-extension-versionsx86-64.html
+    us-east-1:
+      Layer: arn:aws:lambda:us-east-1:580247275435:layer:LambdaInsightsExtension:18
+    us-east-2:
+      Layer: arn:aws:lambda:us-east-2:580247275435:layer:LambdaInsightsExtension:18
+    us-west-1:
+      Layer: arn:aws:lambda:us-west-1:580247275435:layer:LambdaInsightsExtension:18
+    us-west-2:
+      Layer: arn:aws:lambda:us-west-2:580247275435:layer:LambdaInsightsExtension:18
+    ca-central-1:
+      Layer: arn:aws:lambda:ca-central-1:580247275435:layer:LambdaInsightsExtension:18
+    eu-central-1:
+      Layer: arn:aws:lambda:eu-central-1:580247275435:layer:LambdaInsightsExtension:18
+    eu-west-1:
+      Layer: arn:aws:lambda:eu-west-1:580247275435:layer:LambdaInsightsExtension:18
+    eu-west-2:
+      Layer: arn:aws:lambda:eu-west-2:580247275435:layer:LambdaInsightsExtension:18
+    eu-west-3:
+      Layer: arn:aws:lambda:eu-west-3:580247275435:layer:LambdaInsightsExtension:18
+    eu-north-1:
+      Layer: arn:aws:lambda:eu-north-1:580247275435:layer:LambdaInsightsExtension:18
+    eu-south-1:
+      Layer: arn:aws:lambda:eu-south-1:339249233099:layer:LambdaInsightsExtension:11
+    ap-northeast-1:
+      Layer: arn:aws:lambda:ap-northeast-1:580247275435:layer:LambdaInsightsExtension:25
+    ap-northeast-2:
+      Layer: arn:aws:lambda:ap-northeast-2:580247275435:layer:LambdaInsightsExtension:18
+    ap-southeast-1:
+      Layer: arn:aws:lambda:ap-southeast-1:580247275435:layer:LambdaInsightsExtension:18
+    ap-southeast-2:
+      Layer: arn:aws:lambda:ap-southeast-2:580247275435:layer:LambdaInsightsExtension:18
+    ap-south-1:
+      Layer: arn:aws:lambda:ap-south-1:580247275435:layer:LambdaInsightsExtension:18
+    sa-east-1:
+      Layer: arn:aws:lambda:sa-east-1:580247275435:layer:LambdaInsightsExtension:18
+    cn-north-1:
+      Layer: arn:aws-cn:lambda:cn-north-1:488211338238:layer:LambdaInsightsExtension:11
+    cn-northwest-1:
+      Layer: arn:aws-cn:lambda:cn-northwest-1:488211338238:layer:LambdaInsightsExtension:11
+    me-south-1:
+      Layer: arn:aws:lambda:me-south-1:285320876703:layer:LambdaInsightsExtension:11
+    af-south-1:
+      Layer: arn:aws:lambda:af-south-1:012438385374:layer:LambdaInsightsExtension:11
+
+
 Resources:
   LambdaFunction:
     Type: AWS::Serverless::Function
@@ -230,7 +285,9 @@ Resources:
       Handler: dist/idpscim-linux-amd64/idpscim # depends on the path inside .aws-sam/build/LambdaFunction/ during the build process using sam build
       Timeout: !Ref Timeout
       CodeUri: ../../. # see Metadata section
-      Tracing: Active
+      Tracing: !Ref Tracing
+      Layers:
+        - !FindInMap [LambdaInsightsExtension, !Ref AWS::Region, Layer]
       Environment:
         Variables:
           IDPSCIM_LOG_LEVEL: !Ref LogLevel
@@ -269,6 +326,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
         - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
+        - arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy
       Policies:
         - PolicyName: CustomLambdaPolicy
           PolicyDocument:
