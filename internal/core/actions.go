@@ -92,7 +92,7 @@ func scimSync(
 		return nil, nil, nil, fmt.Errorf("error reconciling groups members: %w", err)
 	}
 
-	// membersCreate + membersEqual = members total
+	// membersCreated + membersEqual = members total
 	totalGroupsMembersResult = model.MergeGroupsMembersResult(membersCreated, membersEqual)
 
 	return totalGroupsResult, totalUsersResult, totalGroupsMembersResult, nil
@@ -121,11 +121,11 @@ func stateSync(
 	}).Info("syncing from state")
 
 	if idpGroupsResult.HashCode == state.Resources.Groups.HashCode {
-		log.Info("provider groups and state groups are the same, nothing to do with groups")
+		log.Info("identity provider groups and state groups are the same, nothing to do with groups")
 
 		totalGroupsResult = &state.Resources.Groups
 	} else {
-		log.Info("provider groups and state groups are different")
+		log.Info("identity provider groups and state groups are different")
 		// now here we have the google fresh data and the last sync data state
 		// we need to compare the data and decide what to do
 		// see differences between the two datasets
@@ -149,11 +149,11 @@ func stateSync(
 	}
 
 	if idpUsersResult.HashCode == state.Resources.Users.HashCode {
-		log.Info("provider users and state users are the same, nothing to do with users")
+		log.Info("identity provider users and state users are the same, nothing to do with users")
 
 		totalUsersResult = &state.Resources.Users
 	} else {
-		log.Info("provider users and state users are different")
+		log.Info("identity provider users and state users are different")
 
 		log.WithFields(log.Fields{
 			"idp":   idpUsersResult.Items,
@@ -174,14 +174,14 @@ func stateSync(
 	}
 
 	if idpGroupsMembersResult.HashCode == state.Resources.GroupsMembers.HashCode {
-		log.Info("provider groups-members and state groups-members are the same, nothing to do with groups-members")
+		log.Info("identity provider groups-members and state groups-members are the same, nothing to do with groups-members")
 
 		totalGroupsMembersResult = &state.Resources.GroupsMembers
 	} else {
-		log.Info("provider groups-members and state groups-members are different")
+		log.Info("identity provider groups-members and state groups-members are different")
 
 		// if we create a group or user during the sync, we need the scimid of these new groups/users
-		// because to add members to a group the scim api needs that.
+		// because to add members to a group and to update and delete the scim api needs that.
 		// so this function will fill the scimid of the new groups/users
 		groupsMembers := model.UpdateGroupsMembersSCIMID(idpGroupsMembersResult, totalGroupsResult, totalUsersResult)
 

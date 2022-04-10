@@ -65,7 +65,7 @@ func MembersOperations(idp, scim *GroupsMembersResult) (create, equal, remove *G
 	return
 }
 
-// GroupsOperations returns the differences between the groups in the
+// GroupsOperations returns the differences between the groups in the idp and the scim or state
 // this use the Groups Name as the key.
 // SCIM Groups cannot be updated.
 // return 4 objest of GroupsResult
@@ -233,7 +233,7 @@ func UsersOperations(idp, scim *UsersResult) (create, update, equal, remove *Use
 	return
 }
 
-// MergeGroupsResult merges n GroupsResult result
+// MergeGroupsResult merges n GroupsResult
 // NOTE: this function does not check the content of the GroupsResult, so
 // the return could have duplicated groups
 func MergeGroupsResult(grs ...*GroupsResult) (merged *GroupsResult) {
@@ -252,7 +252,7 @@ func MergeGroupsResult(grs ...*GroupsResult) (merged *GroupsResult) {
 	return
 }
 
-// MergeUsersResult merges n UsersResult result
+// MergeUsersResult merges n UsersResult
 // NOTE: this function does not check the content of the UsersResult, so
 // the return could have duplicated users
 func MergeUsersResult(urs ...*UsersResult) (merged *UsersResult) {
@@ -271,7 +271,7 @@ func MergeUsersResult(urs ...*UsersResult) (merged *UsersResult) {
 	return
 }
 
-// MergeGroupsMembersResult merges n GroupMembers result
+// MergeGroupsMembersResult merges n GroupMembers
 // NOTE: this function does not check the content of the GroupMembers, so
 // the return could have duplicated groupsMembers
 func MergeGroupsMembersResult(gms ...*GroupsMembersResult) (merged *GroupsMembersResult) {

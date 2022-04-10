@@ -81,7 +81,10 @@ func (ss *SyncService) SyncGroupsAndTheirMembers(ctx context.Context) error {
 	}
 
 	if idpUsersResult.Items == 0 {
-		log.Warn("there are no users in the identity provider")
+		log.WithFields(
+			log.Fields{
+				"group_filter": ss.provGroupsFilter,
+			}).Warn("there are no users in the identity provider")
 	}
 
 	if idpGroupsResult.Items == 0 {
@@ -92,7 +95,10 @@ func (ss *SyncService) SyncGroupsAndTheirMembers(ctx context.Context) error {
 	}
 
 	if idpGroupsMembersResult.Items == 0 {
-		log.Warn("there are no groups with members in the identity provider")
+		log.WithFields(
+			log.Fields{
+				"group_filter": ss.provGroupsFilter,
+			}).Warn("there are no groups with members in the identity provider")
 	}
 
 	log.Info("getting state data")
@@ -119,7 +125,7 @@ func (ss *SyncService) SyncGroupsAndTheirMembers(ctx context.Context) error {
 		// reconciled. Basically, checks if SCIM is not clean before the first sync
 		// and we need to reconcile the SCIM side with the identity provider side.
 		// In case of migration from a different tool and we want to keep the state
-		// of the users and groups in the SCIM side, just no recreation, keep the existing ones when the:n
+		// of the users and groups in the SCIM side, just no recreation, keep the existing ones when then
 		// - Groups names are equals on both sides, update only the external id (coming from the identity provider)
 		// - Users emails are equals on both sides, update only the external id (coming from the identity provider)
 		totalGroupsResult, totalUsersResult, totalGroupsMembersResult, err = scimSync(ctx, ss.scim, idpGroupsResult, idpUsersResult, idpGroupsMembersResult)
