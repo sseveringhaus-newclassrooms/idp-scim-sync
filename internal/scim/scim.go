@@ -233,6 +233,14 @@ func (s *Provider) GetUsers(ctx context.Context) (*model.UsersResult, error) {
 
 	users := make([]*model.User, 0)
 	for _, user := range usersResponse.Resources {
+		email := ""
+		if len(user.Emails) > 0 {
+			email = user.Emails[0].Value
+		}
+		log.WithFields(log.Fields{
+			"user":  user.DisplayName,
+			"email": email,
+		}).Trace("getting users")
 		e := &model.User{
 			IPID:   user.ExternalID,
 			SCIMID: user.ID,
@@ -242,7 +250,7 @@ func (s *Provider) GetUsers(ctx context.Context) (*model.UsersResult, error) {
 			},
 			DisplayName: user.DisplayName,
 			Active:      user.Active,
-			Email:       user.Emails[0].Value,
+			Email:       email,
 		}
 		e.SetHashCode()
 
