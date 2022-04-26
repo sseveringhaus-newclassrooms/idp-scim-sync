@@ -100,7 +100,7 @@ This is the way if you want to build an deploy the lambda function from your loc
 Requirements:
 
 1. [git](https://git-scm.com/)
-2. [Go](https://go.dev/learn/)
+2. [Go](https://go.dev/learn/) version [1.18 or later](https://go.dev/doc/devel/release)
 3. [AWS SAM Cli](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 
 Validate, Build and Deploy:
@@ -123,7 +123,7 @@ You will have two ways to execute the binaries of this project in local, buildin
 To build the project in local, you will need to have installed and configured at least the following:
 
 1. [git](https://git-scm.com/)
-2. [Go](https://go.dev/learn/)
+2. [Go](https://go.dev/learn/) version [1.18 or later](https://go.dev/doc/devel/release)
 3. [make](https://www.gnu.org/software/make/)
 
 Then you will need to clone the repository in your local machine, and execute the following commands:
